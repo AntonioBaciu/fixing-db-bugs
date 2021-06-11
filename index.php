@@ -59,8 +59,7 @@ if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
 
     //@todo Why does this loop not work? If only I could see the bigger picture.
     foreach ($_POST['sports'] as $sport) {
-        $userId = $pdo->lastInsertId();
-
+        // Moved [userID] to the else statement
         $handle = $pdo->prepare('INSERT INTO sport (user_id, sport) VALUES (:userId, :sport)');
         $handle->bindValue(':userId', $userId);
         $handle->bindValue(':sport', $sport);
@@ -68,11 +67,11 @@ if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
     }
 } elseif (isset($_POST['delete'])) {
     //@todo BUG? Why does always delete all my users?
-    $handle = $pdo->prepare('DELETE FROM user');
-    //The line below just gave me an error, probably not important. Annoying line.
-    //$handle->bindValue(':id', $_POST['id']);
+    // Added missing [WHERE id = :id] #
+    $handle = $pdo->prepare('DELETE FROM user WHERE id = :id');
+    // Uncommented [$handle->bindValue]
+    $handle->bindValue(':id', $_POST['id']);
     $handle->execute();
-
     $message = 'Your record has been deleted';
 }
 
