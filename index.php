@@ -1,6 +1,12 @@
 <?php
 declare (strict_types = 1);
 
+// Displays Errors #
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+// games or sports to be displayed in the table
 $sports = ['Football', 'Tennis', 'Ping pong', 'Volley ball', 'Rugby', 'Horse riding', 'Swimming', 'Judo', 'Karate'];
 
 function openConnection(): PDO
@@ -9,7 +15,7 @@ function openConnection(): PDO
     $dbhost = "localhost";
     $dbuser = "root";
     $dbpass = "";
-    $db = "x";
+    $db = "fixing-db-bugs";
 
     $driverOptions = [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",
