@@ -12,10 +12,10 @@ $sports = ['Football', 'Tennis', 'Ping pong', 'Volley ball', 'Rugby', 'Horse rid
 function openConnection(): PDO
 {
     // No bugs in this function, just use the right credentials.
-    $dbhost = "localhost";
-    $dbuser = "root";
-    $dbpass = "";
-    $db = "fixing-db-bugs";
+    $dbHost = "localhost";
+    $dbUser = "root";
+    $dbPass = "";
+    $dbName = "fixing-db-bugs";
 
     $driverOptions = [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",
@@ -23,10 +23,10 @@ function openConnection(): PDO
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ];
 
-    return new PDO('mysql:host=' . $dbhost . ';dbname=' . $db, $dbuser, $dbpass, $driverOptions);
+    return new PDO('mysql:host=' . $dbHost . ';dbname=' . $dbName, $dbUser, $dbPass, $driverOptions);
 }
 
-$pdo = openConnection();
+$pdo = openConnection(); // returns the PDO connection to the database
 
 if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
     //@todo possible bug below?
@@ -35,9 +35,8 @@ if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
         $message = 'Your record has been added';
     } else {
         //@todo why does this not work?
-        $handle = $pdo->prepare(
-            'UPDATE user VALUES (firstname = :firstname, lastname = :lastname, year = :year)
-            WHERE id = :id');
+        // Changed [VALUES] to [SET] #
+        $handle = $pdo->prepare('UPDATE user SET firstname = :firstname, lastname = :lastname, year = :year WHERE id = :id');
         $handle->bindValue(':id', $_POST['id']);
         $message = 'Your record has been updated';
     }
