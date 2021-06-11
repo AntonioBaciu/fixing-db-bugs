@@ -5,6 +5,11 @@ $sports = ['Football', 'Tennis', 'Ping pong', 'Volley ball', 'Rugby', 'Horse rid
 
 function openConnection(): PDO
 {
+    // No bugs in this function, just use the right credentials.
+    /*$dbhost = "DB_HOST";
+    $dbuser = "DB_USER";
+    $dbpass = "DB_USER_PASSWORD";
+    $db = "DB_NAME";*/
     $dbhost = "localhost";
     $dbuser = "root";
     $dbpass = "";
@@ -22,7 +27,8 @@ function openConnection(): PDO
 $pdo = openConnection();
 
 if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
-    if (empty($_POST['id'])) {
+    //@todo possible bug below?
+    if (empty($_POST['id'])) { //switched if statement
         $handle = $pdo->prepare('INSERT INTO user (firstname, lastname, year) VALUES (:firstname, :lastname, :year)');
         $message = 'Your record has been added';
     } else {
@@ -42,7 +48,9 @@ if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
         $handle->execute();
         $userId = $_POST['id'];
     } else {
+        //@todo The last insertId needs to be moved from the foreach below to this else. Now it will fetch the ID of the last inserted sport.
         $userId = $pdo->lastInsertId();
+        //why did I leave this if empty? There must be no important reason for this. Move on.
     }
 
     foreach ($_POST['sports'] as $sport) {
@@ -59,6 +67,8 @@ if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
     $message = 'Your record has been deleted';
 }
 
+//@todo: make id ambiguous -> needs to be select user.id
+//@todo switched concat_ws(" ", firstname, lastname) to wrong order concat_ws(firstname, lastname, " ")
 $handle = $pdo->prepare('SELECT user.id, concat_ws(" ", firstname, lastname) AS name, sport FROM user LEFT JOIN sport ON user.id = sport.user_id where year = :year order by sport');
 $handle->bindValue(':year', date('Y'));
 $handle->execute();
@@ -72,12 +82,13 @@ if (!empty($_GET['id'])) {
     $handle->execute();
     $selectedUser = $handle->fetch();
 
+    //This segment marks all the checkboxes with all the current sports for an existing user when you update him. Currently that is not working however. :-(
     $selectedUser['sports'] = [];
     $handle = $pdo->prepare('SELECT sport FROM sport where user_id = :id');
     $handle->bindValue(':id', $_GET['id']);
     $handle->execute();
     foreach ($handle->fetchAll() as $sport) {
-        $selectedUser['sports'][] = $sport['sport'];
+        $selectedUser['sports'][] = $sport['sport']; //@todo I just want an array of all sports of this, why is it not working?
     }
 }
 
