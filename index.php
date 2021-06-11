@@ -53,6 +53,8 @@ if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
         $userId = $_POST['id'];
     } else {
         //why did I leave this if empty? There must be no important reason for this. Move on.
+        // Added missing else statement #
+        $userId = $pdo->lastInsertId();
     }
 
     //@todo Why does this loop not work? If only I could see the bigger picture.
