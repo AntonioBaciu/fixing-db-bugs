@@ -59,7 +59,7 @@ if (!empty($_POST['firstname']) && !empty($_POST['lastname'])) {
 
     //@todo Why does this loop not work? If only I could see the bigger picture.
     foreach ($_POST['sports'] as $sport) {
-        // Moved [userID] to the else statement
+        // Moved [userID] to the else statement #
         $handle = $pdo->prepare('INSERT INTO sport (user_id, sport) VALUES (:userId, :sport)');
         $handle->bindValue(':userId', $userId);
         $handle->bindValue(':sport', $sport);
@@ -97,7 +97,9 @@ if (!empty($_GET['id'])) {
     $handle->bindValue(':id', $_GET['id']);
     $handle->execute();
     foreach ($handle->fetchAll() as $sport) {
-        $selectedUser['sports'][] = $sport; //@todo I just want an array of all sports of this, why is it not working?
+        // added [$index] to [$selectedUser] and increased the index [$index++]
+        $selectedUser['sports'][$index] = $sport; //@todo I just want an array of all sports of this, why is it not working?
+        $index++;
     }
 }
 
